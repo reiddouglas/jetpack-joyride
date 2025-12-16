@@ -21,7 +21,7 @@ public class Player : MonoBehaviour
         Debug.Log("Gravity scale at start: " + rigidBody.gravityScale);
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         movementStrategy.UpdateMovement(rigidBody, playerInput);
     }

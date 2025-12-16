@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class ShockTrap : MonoBehaviour
+public class ShockTrap : Spawnable
 {
     // Later, add scriptable objects for max height and width of cells for spawning
 
@@ -24,15 +24,15 @@ public class ShockTrap : MonoBehaviour
         
     }
 
-    private void OnEnable()
+    public override void OnSpawn()
     {
         RandomizeCircles();
         ConnectCircles();
     }
 
-    private void OnDisable()
+    public override void OnDespawn()
     {
-        
+        return;
     }
 
     private void SpawnCircles(int count)
@@ -54,7 +54,7 @@ public class ShockTrap : MonoBehaviour
         foreach(GameObject circle in shockCircles)
         {
             //TODO change this so multiple traps do not overlap - use a grid system?
-            circle.transform.position = new Vector2(Random.Range(0f, 10f), Random.Range(0f, 10f));
+            circle.transform.position = transform.position +  new Vector3(Random.Range(-10f, 10f), Random.Range(0f, 10f));
         }
     }
 
@@ -65,7 +65,6 @@ public class ShockTrap : MonoBehaviour
         Vector3 posA = shockCircles[0].transform.position;
         Vector3 posB = shockCircles[1].transform.position;
 
-        // --- LINE RENDERER ---
         LineRenderer line = shockArc.GetComponent<LineRenderer>();
         if (line != null)
         {
@@ -74,18 +73,15 @@ public class ShockTrap : MonoBehaviour
             line.SetPosition(1, posB);
         }
 
-        // --- EDGE COLLIDER 2D ---
         EdgeCollider2D edge = shockArc.GetComponent<EdgeCollider2D>();
         if (edge != null)
         {
-            // Convert to Vector2 array
             Vector2[] points = new Vector2[2];
             points[0] = posA;
             points[1] = posB;
             edge.points = points;
         }
 
-        // Optional: move shockArc object to origin of first circle (or 0,0)
         shockArc.transform.position = Vector3.zero;
     }
 }
